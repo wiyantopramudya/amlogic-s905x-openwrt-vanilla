@@ -46,7 +46,7 @@ env:
 jobs:
   build:
     # ✅ khusus Linux Mint runner
-    runs-on: Linux-Mint
+    runs-on: self-hosted
 
     steps:
       - name: Checkout
