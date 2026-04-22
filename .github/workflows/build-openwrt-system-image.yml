@@ -7,7 +7,7 @@ on:
       source_branch:
         description: "Select the source branch"
         required: false
-        default: "openwrt_main"
+        default: "immortalwrt_master"
         type: choice
         options:
           - openwrt_main
@@ -46,7 +46,8 @@ env:
 
 jobs:
   build:
-    runs-on: [self-hosted, ubuntu]
+    # FIX PENTING: lebih fleksibel untuk self-hosted runner
+    runs-on: self-hosted
 
     steps:
       - name: Checkout
@@ -63,6 +64,7 @@ jobs:
 
       - name: Clone ImmortalWrt
         run: |
+          rm -rf openwrt
           git clone https://github.com/immortalwrt/immortalwrt openwrt
 
       - name: Load config
@@ -87,7 +89,7 @@ jobs:
           cd openwrt
           make -j$(nproc) || make -j1 V=s
 
-      # ===================== FIXED IMMORTALWRT PART =====================
+      # ===================== FIXED IMMORTALWRT SAFE =====================
       - name: Collect firmware output
         id: clean
         run: |
@@ -96,12 +98,12 @@ jobs:
           mkdir -p output
 
           echo "=============================="
-          echo "🔍 BIN TARGET CHECK"
+          echo "🔍 CHECK BIN TARGET"
           echo "=============================="
           find bin/targets -type f || true
 
           echo "=============================="
-          echo "📦 SEARCH FIRMWARE"
+          echo "📦 COLLECT FIRMWARE"
           echo "=============================="
 
           FILES=$(find bin/targets -type f \( \
